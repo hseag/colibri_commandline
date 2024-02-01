@@ -14,7 +14,7 @@ Commands:
   selftest            : executes an internal selftest
   fwupdate FILE       : loads a new firmware
   command COMMAND     : executes a command e.g colibri.exe command \"V 0\" returns the value at index 0
-help COMMAND        : Prints a detailed help
+  help COMMAND        : Prints a detailed help
 
 Options:
   --verbose           : prints debug info
