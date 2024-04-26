@@ -74,6 +74,7 @@ typedef enum
     ERROR_COLIBRI_FILE_NOT_FOUND = 204,
     ERROR_COLIBRI_LEVELLING_FAILED = 205,
     ERROR_COLIBRI_FILE_ERROR = 206,
+    ERROR_COLIBRI_NUMBER_OF_MEASUREMENTS = 207,
 } Error_t;
 
 typedef enum
@@ -134,6 +135,7 @@ DLLEXPORT Error_t colibriCommand(Colibri_t *self, const char *command, ColibriRe
 DLLEXPORT Error_t colibriGet(Colibri_t *self, uint32_t index, char *value, size_t valueSize);
 DLLEXPORT Error_t colibriSet(Colibri_t *self, uint32_t index, const char *value);
 DLLEXPORT Error_t colibriMeasure(Colibri_t *self, uint32_t *sample230, uint32_t *reference230, uint32_t *sample260, uint32_t *reference260, uint32_t *sample280, uint32_t *reference280, uint32_t *sample340, uint32_t *reference340);
+DLLEXPORT Error_t colibriBaseline(Colibri_t *self, uint32_t *sample230, uint32_t *reference230, uint32_t *sample260, uint32_t *reference260, uint32_t *sample280, uint32_t *reference280, uint32_t *sample340, uint32_t *reference340);
 DLLEXPORT Error_t colibriLevelling(Colibri_t *self, Levelling_t *levelling230, Levelling_t *levelling260, Levelling_t *levelling280, Levelling_t *levelling340);
 DLLEXPORT Error_t colibriSelftest(Colibri_t *self, uint32_t *result);
 DLLEXPORT Error_t colibriFwUpdate(Colibri_t *self, const char *file);

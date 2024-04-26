@@ -5,6 +5,7 @@
 #include "cmdget.h"
 #include "cmdset.h"
 #include "cmdmeasure.h"
+#include "cmdbaseline.h"
 #include "cmdselftest.h"
 #include "cmdcommand.h"
 #include "cmdfwupdate.h"
@@ -28,6 +29,7 @@ void help(int argcCmd, char **argvCmd)
 			fprintf(stdout, "  levelling           : prepares the module for a measurment\n");
 			fprintf(stdout, "  save                : save the last measurement(s)\n");
 			fprintf(stdout, "  calculate           : caluclate od's or concentrations\n");
+			fprintf(stdout, "  baseline            : starts a baseline measurement and return the values\n");
 			fprintf(stdout, "  measure             : starts a measurement and return the values\n");
 			fprintf(stdout, "  version             : return the CLI and DLL version\n");
 			fprintf(stdout, "  selftest            : executes an internal selftest\n");
@@ -132,6 +134,14 @@ void help(int argcCmd, char **argvCmd)
 				fprintf(stdout, "Output: all units in [uV]\n");
 				fprintf(stdout, "  SAMPLE_230 REFERENCE_230 SAMPLE_260 REFERENCE_260 SAMPLE_280 REFERENCE_280 SAMPLE_340 REFERENCE_340\n");
 			}
+			else if(strcmp(argvCmd[1], "baseline") == 0)
+			{
+				fprintf(stdout, "Usage: colibri baseline\n");
+				fprintf(stdout, "  If a levelling is needed, the command levelling is executed before a measurement is started. For this measurement, the cuvette holder must be empty.\n");
+				fprintf(stdout, "  The firmware has an internal storage for up to ten measurements. The command baseline clears this storage.\n");
+				fprintf(stdout, "Output: all units in [uV]\n");
+				fprintf(stdout, "  SAMPLE_230 REFERENCE_230 SAMPLE_260 REFERENCE_260 SAMPLE_280 REFERENCE_280 SAMPLE_340 REFERENCE_340\n");
+			}
 			else if(strcmp(argvCmd[1], "version") == 0)
 			{
 				fprintf(stdout, "Usage: colibri version\n");
@@ -226,6 +236,10 @@ int main(int argc, char *argv[])
 		else if (strcmp(argvCmd[0], "measure") == 0)
 		{
 			return cmdMeasure(&colibri);
+		}
+		else if (strcmp(argvCmd[0], "baseline") == 0)
+		{
+			return cmdBaseline(&colibri);
 		}
 		else if (strcmp(argvCmd[0], "levelling") == 0)
 		{

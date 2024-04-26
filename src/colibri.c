@@ -342,6 +342,33 @@ Error_t colibriLastLevelling(Colibri_t * self, Levelling_t * levelling230, Level
 	return colibriExecute(self, "C 0", colibriLevelling_, &user);
 }
 
+Error_t colibriBaseline_(ColibriResponse_t *response, void *user)
+{
+	UserMeasurement *u = (UserMeasurement *)user;
+	if (response->argc == 9)
+	{
+		*(u->sample230)    = atoi(response->argv[1]);
+		*(u->reference230) = atoi(response->argv[2]);
+		*(u->sample260)    = atoi(response->argv[3]);
+		*(u->reference260) = atoi(response->argv[4]);
+		*(u->sample280)    = atoi(response->argv[5]);
+		*(u->reference280) = atoi(response->argv[6]);
+		*(u->sample340)    = atoi(response->argv[7]);
+		*(u->reference340) = atoi(response->argv[8]);
+		return ERROR_COLIBRI_OK;
+	}
+	else
+	{
+		return ERROR_COLIBRI_PROTOCOL_ERROR;
+	}
+}
+
+Error_t colibriBaseline(Colibri_t * self, uint32_t * sample230, uint32_t * reference230, uint32_t * sample260, uint32_t * reference260, uint32_t * sample280, uint32_t * reference280, uint32_t * sample340, uint32_t * reference340)
+{
+	UserMeasurement user = {sample230 = sample230, reference230 = reference230, sample260 = sample260, reference260 = reference260, sample280 = sample280, reference280 = reference280, sample340 = sample340, reference340 = reference340};
+	return colibriExecute(self, "G", colibriBaseline_, &user);
+}
+
 Error_t colibriSelftest_(ColibriResponse_t *response, void *user)
 {
 	UserSelftest *u = (UserSelftest *)user;
