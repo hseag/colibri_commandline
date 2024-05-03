@@ -221,12 +221,8 @@ uint32_t colibriPortRead(int hComm, char *buffer, size_t size, bool verbose)
 
 errno_t strncat_s(char *restrict dest, rsize_t destsz, const char *restrict src, rsize_t count)
 {
-    size_t s1_len = 0;
-    size_t m = destsz - (s1_len = strnlen(dest, destsz));
-
     // If s2 < n, we are going to read strlen(s2) + its terminating null byte
     // Otherwise, we are going to read exactly n bytes
-    rsize_t s2_size = MIN(strnlen(src, count) + 1, count);
 
     strncat(dest, src, count);
     // should not be necessary
@@ -238,7 +234,6 @@ errno_t strncat_s(char *restrict dest, rsize_t destsz, const char *restrict src,
 errno_t strncpy_s(char *restrict dest, rsize_t destsz, const char *restrict src, rsize_t count)
 {
     rsize_t m;
-    rsize_t s2_size = MIN(strnlen(src, count) + 1, count);
 
     m = MIN(count, destsz - 1);
     strncpy(dest, src, m);
@@ -250,7 +245,6 @@ errno_t strncpy_s(char *restrict dest, rsize_t destsz, const char *restrict src,
 
 errno_t strcpy_s(char *restrict dest, rsize_t destsz, const char *restrict src)
 {
-    rsize_t s2_len = 0;
     strncpy(dest, src, destsz - 1);
     dest[destsz - 1] = '\0';
 

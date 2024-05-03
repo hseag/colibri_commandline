@@ -11,7 +11,7 @@
 #include "cmdfwupdate.h"
 #include "cmdlevelling.h"
 #include "cmdsave.h"
-#include "cmdcalculate.h"
+#include "cmddata.h"
 #include "printerror.h"
 #include <stdio.h>
 #include <string.h>
@@ -261,9 +261,9 @@ int main(int argc, char *argv[])
 		{
 			return cmdCommand(&colibri, argvCmd[1]);
 		}
-		else if (strcmp(argvCmd[0], "calculate") == 0)
+		else if (strcmp(argvCmd[0], "data") == 0)
 		{
-			return cmdCalculate(&colibri, argcCmd, argvCmd);
+			return cmdData(&colibri, argcCmd, argvCmd);
 		}
 		else if (strcmp(argvCmd[0], "save") == 0)
 		{

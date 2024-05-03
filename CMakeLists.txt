@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(colibri LANGUAGES C)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "ON")
 
 add_library(libcolibri SHARED)
 target_include_directories(libcolibri PRIVATE "${PROJECT_SOURCE_DIR}")
@@ -22,6 +22,7 @@ if (WIN32)
 endif()
 
 if (UNIX)
+    set (CMAKE_C_FLAGS "-Wall")
     target_sources(libcolibri PRIVATE src/colibri_unix.c)
     target_link_libraries(libcolibri m)
     find_path(LIBUSB_INCLUDE_DIR NAMES libusb.h PATH_SUFFIXES "include" "libusb" "libusb-1.0")
@@ -41,9 +42,10 @@ src/cmdbaseline.c
 src/cmdcommand.c
 src/cmdfwupdate.c
 src/cmdlevelling.c
-src/cmdcalculate.c
+src/cmddata.c
 src/cmdsave.c
 src/printerror.c
+src/colibriJson.c
 3party/cJSON/cJSON.c                               
                                )
 target_include_directories(colibri PRIVATE 3party/cJSON)

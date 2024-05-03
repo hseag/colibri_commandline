@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: © 2024 HSE AG, <opensource@hseag.com>
 
 #include "cmdsave.h"
-#include "cJSON.h"
+#include "colibriJson.h"
 #include "colibri.h"
 #include "printerror.h"
 #include <math.h>
@@ -12,29 +12,6 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#define MEASUREMENTS "measurements"
-#define SERIALNUMBER "serialnumber"
-#define FIRMWAREVERSION "firmwareVersion"
-
-#define SM_SAMPLE "sample"
-#define SM_REFERENCE "reference"
-
-#define LV_AMPLIFICATION_SAMPLE "amplificationSample"
-#define LV_AMPLIFICATION_REFERENCE "amplificationReference"
-#define LV_CURRENT "current"
-#define LV_RESULT "result"
-#define LV_RESULT_TEXT "resultText"
-
-#define M_LEVELLING "levelling"
-#define M_BASELINE "baseline"
-#define M_AIR "air"
-#define M_SAMPLE "sample"
-#define M_COMMENT "comment"
-
-#define L230 "230"
-#define L260 "260"
-#define L280 "280"
-#define L340 "340"
 
 static double amplification2number(Colibri_t* self, bool isSample, uint32_t value)
 {
@@ -107,8 +84,8 @@ static cJSON* channelObject(uint32_t sample, uint32_t reference)
     cJSON* oSample    = cJSON_CreateNumber(sample);
     cJSON* oReference = cJSON_CreateNumber(reference);
 
-    cJSON_AddItemToObject(obj, SM_SAMPLE, oSample);
-    cJSON_AddItemToObject(obj, SM_REFERENCE, oReference);
+    cJSON_AddItemToObject(obj, DICT_SAMPLE, oSample);
+    cJSON_AddItemToObject(obj, DICT_REFERENCE, oReference);
 
     return obj;
 }
@@ -117,10 +94,10 @@ static cJSON* measuremtObject(uint32_t sample230, uint32_t reference230, uint32_
 {
     cJSON* obj = cJSON_CreateObject();
 
-    cJSON_AddItemToObject(obj, "230", channelObject(sample230, reference230));
-    cJSON_AddItemToObject(obj, "260", channelObject(sample260, reference260));
-    cJSON_AddItemToObject(obj, "280", channelObject(sample280, reference280));
-    cJSON_AddItemToObject(obj, "340", channelObject(sample340, reference340));
+    cJSON_AddItemToObject(obj, DICT_230, channelObject(sample230, reference230));
+    cJSON_AddItemToObject(obj, DICT_260, channelObject(sample260, reference260));
+    cJSON_AddItemToObject(obj, DICT_280, channelObject(sample280, reference280));
+    cJSON_AddItemToObject(obj, DICT_340, channelObject(sample340, reference340));
 
     return obj;
 }
@@ -154,11 +131,11 @@ static cJSON* levellingChannel(Colibri_t* self, Levelling_t levelling)
 {
     cJSON* obj = cJSON_CreateObject();
 
-    cJSON_AddItemToObject(obj, LV_AMPLIFICATION_SAMPLE, cJSON_CreateNumber(amplification2number(self, true, levelling.amplificationSample)));
-    cJSON_AddItemToObject(obj, LV_AMPLIFICATION_REFERENCE, cJSON_CreateNumber(amplification2number(self, false, levelling.amplificationReference)));
-    cJSON_AddItemToObject(obj, LV_CURRENT, cJSON_CreateNumber(levelling.current));
-    cJSON_AddItemToObject(obj, LV_RESULT, cJSON_CreateNumber(levelling.result));
-    cJSON_AddItemToObject(obj, LV_RESULT_TEXT, cJSON_CreateString(result2text(levelling.result)));
+    cJSON_AddItemToObject(obj, DICT_AMPLIFICATION_SAMPLE, cJSON_CreateNumber(amplification2number(self, true, levelling.amplificationSample)));
+    cJSON_AddItemToObject(obj, DICT_AMPLIFICATION_REFERENCE, cJSON_CreateNumber(amplification2number(self, false, levelling.amplificationReference)));
+    cJSON_AddItemToObject(obj, DICT_CURRENT, cJSON_CreateNumber(levelling.current));
+    cJSON_AddItemToObject(obj, DICT_RESULT, cJSON_CreateNumber(levelling.result));
+    cJSON_AddItemToObject(obj, DICT_RESULT_TEXT, cJSON_CreateString(result2text(levelling.result)));
 
     return obj;
 }
@@ -180,12 +157,12 @@ static Error_t addLevelling(Colibri_t* self, cJSON* obj)
 
     cJSON* objLevelling = cJSON_CreateObject();
 
-    cJSON_AddItemToObject(objLevelling, L230, levellingChannel(self, levelling230));
-    cJSON_AddItemToObject(objLevelling, L260, levellingChannel(self, levelling260));
-    cJSON_AddItemToObject(objLevelling, L280, levellingChannel(self, levelling280));
-    cJSON_AddItemToObject(objLevelling, L340, levellingChannel(self, levelling340));
+    cJSON_AddItemToObject(objLevelling, DICT_230, levellingChannel(self, levelling230));
+    cJSON_AddItemToObject(objLevelling, DICT_260, levellingChannel(self, levelling260));
+    cJSON_AddItemToObject(objLevelling, DICT_280, levellingChannel(self, levelling280));
+    cJSON_AddItemToObject(objLevelling, DICT_340, levellingChannel(self, levelling340));
 
-    cJSON_AddItemToObject(obj, M_LEVELLING, objLevelling);
+    cJSON_AddItemToObject(obj, DICT_LEVELLING, objLevelling);
 
     return ERROR_COLIBRI_OK;
 }
@@ -195,13 +172,13 @@ static Error_t addMeasurement(Colibri_t* self, int argcCmd, char** argvCmd, cJSO
     Error_t ret = ERROR_COLIBRI_OK;
     char    value[20];
 
-    cJSON* oMeasurements = cJSON_GetObjectItem(json, MEASUREMENTS);
+    cJSON* oMeasurements = cJSON_GetObjectItem(json, DICT_MEASUREMENTS);
 
     cJSON* obj = cJSON_CreateObject();
 
     if (argcCmd == 3)
     {
-        cJSON_AddItemToObject(obj, M_COMMENT, cJSON_CreateString(argvCmd[2]));
+        cJSON_AddItemToObject(obj, DICT_COMMENT, cJSON_CreateString(argvCmd[2]));
     }
 
     ret = colibriGet(self, INDEX_LAST_MEASUREMENT_COUNT, value, sizeof(value));
@@ -218,25 +195,25 @@ static Error_t addMeasurement(Colibri_t* self, int argcCmd, char** argvCmd, cJSO
     int lastMeasurementsCount = atoi(value);
     if (lastMeasurementsCount == 2)
     {
-        ret = addSingleMeasurement(self, M_BASELINE, 1, obj);
+        ret = addSingleMeasurement(self, DICT_BASELINE, 1, obj);
         if (ret != ERROR_COLIBRI_OK)
             return ret;
 
-        ret = addSingleMeasurement(self, M_SAMPLE, 0, obj);
+        ret = addSingleMeasurement(self, DICT_SAMPLE, 0, obj);
         if (ret != ERROR_COLIBRI_OK)
             return ret;
     }
     else if (lastMeasurementsCount == 3)
     {
-        ret = addSingleMeasurement(self, M_BASELINE, 2, obj);
+        ret = addSingleMeasurement(self, DICT_BASELINE, 2, obj);
         if (ret != ERROR_COLIBRI_OK)
             return ret;
 
-        ret = addSingleMeasurement(self, M_AIR, 1, obj);
+        ret = addSingleMeasurement(self, DICT_AIR, 1, obj);
         if (ret != ERROR_COLIBRI_OK)
             return ret;
 
-        ret = addSingleMeasurement(self, M_SAMPLE, 0, obj);
+        ret = addSingleMeasurement(self, DICT_SAMPLE, 0, obj);
         if (ret != ERROR_COLIBRI_OK)
             return ret;
     }
@@ -253,30 +230,7 @@ static Error_t addMeasurement(Colibri_t* self, int argcCmd, char** argvCmd, cJSO
 
 static cJSON* loadJson(Colibri_t* self, int argcCmd, char** argvCmd)
 {
-    FILE*  fin    = 0;
-    char*  buffer = NULL;
-    cJSON* json   = NULL;
-    char*  f      = argvCmd[1];
-
-    fin = fopen(f, "rb");
-
-    if (fin)
-    {
-        struct stat st;
-        stat(argvCmd[1], &st);
-
-        buffer = malloc(st.st_size);
-
-        size_t ret = fread(buffer, 1, st.st_size, fin);
-
-        if (ret == st.st_size)
-        {
-            json = cJSON_Parse(buffer);
-        }
-
-        fclose(fin);
-        free(buffer);
-    }
+    cJSON* json = colibriJsonLoad(argvCmd[1]);
 
     // create new JSON file
     if (json == NULL)
@@ -289,35 +243,19 @@ static cJSON* loadJson(Colibri_t* self, int argcCmd, char** argvCmd)
         ret = colibriGet(self, INDEX_SERIALNUMBER, value, sizeof(value));
         if (ret == ERROR_COLIBRI_OK)
         {
-            cJSON_AddItemToObject(json, SERIALNUMBER, cJSON_CreateString(value));
+            cJSON_AddItemToObject(json, DICT_SERIALNUMBER, cJSON_CreateString(value));
         }
 
         ret = colibriGet(self, INDEX_VERSION, value, sizeof(value));
         if (ret == ERROR_COLIBRI_OK)
         {
-            cJSON_AddItemToObject(json, FIRMWAREVERSION, cJSON_CreateString(value));
+            cJSON_AddItemToObject(json, DICT_FIRMWAREVERSION, cJSON_CreateString(value));
         }
 
-        cJSON_AddItemToObject(json, MEASUREMENTS, cJSON_CreateArray());
+        cJSON_AddItemToObject(json, DICT_MEASUREMENTS, cJSON_CreateArray());
     }
 
     return json;
-}
-
-static void saveJson(Colibri_t* self, int argcCmd, char** argvCmd, cJSON* json)
-{
-    FILE* fout   = 0;
-    char* buffer = NULL;
-
-    fout = fopen(argvCmd[1], "w+");
-
-    buffer = cJSON_Print(json);
-
-    fwrite(buffer, strlen(buffer), 1, fout);
-
-    free(buffer);
-
-    fclose(fout);
 }
 
 Error_t cmdSave(Colibri_t* self, int argcCmd, char** argvCmd)
@@ -331,7 +269,7 @@ Error_t cmdSave(Colibri_t* self, int argcCmd, char** argvCmd)
         ret  = addMeasurement(self, argcCmd, argvCmd, json);
         if (ret == ERROR_COLIBRI_OK)
         {
-            saveJson(self, argcCmd, argvCmd, json);
+            colibriJsonSave(argvCmd[1], json);
         }
     }
     else

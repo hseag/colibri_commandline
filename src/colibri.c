@@ -97,7 +97,6 @@ Error_t colibriCommandComm(Colibri_t *self, HANDLE hComm, const char * command, 
 	Error_t ret = ERROR_COLIBRI_OK;
 
 		uint32_t txSize = COLIBRI_MAX_LINE_LENGTH;
-		uint32_t rxSize = COLIBRI_MAX_LINE_LENGTH;
 		char * tx = (char *)calloc(1, txSize);
 		char s[20] = {0};
 		if(self->useChecksum)

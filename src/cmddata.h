@@ -5,5 +5,5 @@
 
 #include "colibri.h"
 
-Error_t cmdCalculate(Colibri_t * self, int argcCmd, char **argvCmd);
+Error_t cmdData(Colibri_t * self, int argcCmd, char **argvCmd);
 	
