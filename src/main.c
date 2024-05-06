@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define VERSION_TOOL "0.0.1"
+#define VERSION_TOOL "1.0.0"
 
 void help(int argcCmd, char **argvCmd)
 {
@@ -117,12 +117,20 @@ void help(int argcCmd, char **argvCmd)
 				fprintf(stdout, "  If FILE is -, the data is printed to stdout.\n");
 				fprintf(stdout, "  If FILE is omitted, an automatic file name is choosen: SN-YEAR-MONTH-DAY_HOUR_MIN_SEC.csv where SN is the serial number of the current colibri module.\n");
 			}
-			else if(strcmp(argvCmd[1], "calculate") == 0)
+			else if(strcmp(argvCmd[1], "data") == 0)
 			{
-				fprintf(stdout, "Usage: colibri calculate od\n");
-				fprintf(stdout, "  Calculates from the last two measurements stored in the colibri module the optical density (od).\n");
+				fprintf(stdout, "Usage: data print FILE\n");
+				fprintf(stdout, "  Prints the calculated values from file FILE.\n");
 				fprintf(stdout, "Output:\n");
-				fprintf(stdout, "  OD_230 OD_260 OD_280 OD_340\n");
+				fprintf(stdout, "  OD_230 OD_260 OD_280 OD_340 CONCENTRATION in ng/ul\n");
+				fprintf(stdout, "\n");
+				fprintf(stdout, "Usage: data calculate [OPTIONS] FILE\n");
+				fprintf(stdout, "  Calculates the optical density and concentration in the given file and adds the values to the file.\n");
+				fprintf(stdout, "  To calculate the values at least the first value must be a blank.\n");
+				fprintf(stdout, "Options:\n");
+				fprintf(stdout, "  --blanks      : number of blanks from the begining. Default is 1\n");
+				fprintf(stdout, "  --pathLength  : path length in [mm]. Default is 1.0\n");
+				fprintf(stdout, "  --a260unit    : for dsDNA use 50, for ssDNS use 33 and for ssRNA use 40. Default is 50.\n");
 			}
 			else if(strcmp(argvCmd[1], "measure") == 0)
 			{

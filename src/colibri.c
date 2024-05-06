@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define VERSION_DLL "0.0.1"
+#define VERSION_DLL "1.0.0"
 
 typedef struct
 {
