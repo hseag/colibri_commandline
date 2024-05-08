@@ -75,7 +75,7 @@ const char * colibriError2String(Error_t e)
 		case ERROR_COLIBRI_FILE_NOT_FOUND:
 		  return "Colibri file not found";
 		case ERROR_COLIBRI_LEVELLING_FAILED:
-		  return "Colibri levelling failed";
+		  return "Colibri levelling failed. Cuvette holder blocked?";
 		default:
 		  return "?";
 	}

@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define VERSION_TOOL "1.0.0"
+#define VERSION_TOOL "1.0.1"
 
 void help(int argcCmd, char **argvCmd)
 {
@@ -24,24 +24,41 @@ void help(int argcCmd, char **argvCmd)
 	{
 			fprintf(stdout, "Usage: colibri [OPTIONS] COMMAND [ARGUMENTS]\n");
 			fprintf(stdout, "Commands:\n");
-			fprintf(stdout, "  get INDEX           : get a value from the device\n");
-			fprintf(stdout, "  set INDEX VALUE     : set a value in the device\n");
-			fprintf(stdout, "  levelling           : prepares the module for a measurment\n");
-			fprintf(stdout, "  save                : save the last measurement(s)\n");
-			fprintf(stdout, "  calculate           : caluclate od's or concentrations\n");
-			fprintf(stdout, "  baseline            : starts a baseline measurement and return the values\n");
-			fprintf(stdout, "  measure             : starts a measurement and return the values\n");
-			fprintf(stdout, "  version             : return the CLI and DLL version\n");
-			fprintf(stdout, "  selftest            : executes an internal selftest\n");
-			fprintf(stdout, "  fwupdate FILE       : loads a new firmware\n");
+			fprintf(stdout, "  baseline            : starts a baseline measurement and return the values\\n");
 			fprintf(stdout, "  command COMMAND     : executes a command e.g colibri.exe command \"V 0\" returns the value at index 0\n");
+			fprintf(stdout, "  data                : handels data in a data file\n");
+			fprintf(stdout, "  fwupdate FILE       : loads a new firmware\n");
+			fprintf(stdout, "  get INDEX           : get a value from the device\n");
 			fprintf(stdout, "  help COMMAND        : Prints a detailed help\n");
-			fprintf(stdout, "\n");
+			fprintf(stdout, "  levelling           : prepares the module for a measurment\n");
+			fprintf(stdout, "  measure             : starts a measurement and return the values\n");
+			fprintf(stdout, "  save                : save the last measurement(s)\n");
+			fprintf(stdout, "  selftest            : executes an internal selftest\n");
+			fprintf(stdout, "  set INDEX VALUE     : set a value in the device\n");
+			fprintf(stdout, "  version             : return the CLI and DLL version\n");
 			fprintf(stdout, "Options:\n");
 			fprintf(stdout, "  --verbose           : prints debug info\n");
 			fprintf(stdout, "  --help -h           : show this help and exit\n");
 			fprintf(stdout, "  --device            : use the given device, if omitted the CLI searchs for a device\n");
 			fprintf(stdout, "  --use-checksum      : use the protocol with a checksum\n");
+			fprintf(stdout, "\n");
+			fprintf(stdout, "The commandline tool returns the following exit codes:\n");
+			fprintf(stdout, "    0: No error.\n");
+			fprintf(stdout, "    1: Unknown command\n");
+			fprintf(stdout, "    2: Invalid parameter\n");
+			fprintf(stdout, "    3: Timeout.\n");
+			fprintf(stdout, "    4: SREC Flash write error\n");
+			fprintf(stdout, "    5: SREC Unsupported type\n");
+			fprintf(stdout, "    6: SREC Invalid crc\n");
+			fprintf(stdout, "    7: SREC Invalid string\n");
+			fprintf(stdout, "    8: Leveeling failed. Cuvette holder blocked?\n");
+			fprintf(stdout, "  100: Response error\n");
+			fprintf(stdout, "  101: Protocol error\n");
+			fprintf(stdout, "  202: Unknown command line argument\n");
+			fprintf(stdout, "  202: Unknown command line option\n");
+			fprintf(stdout, "  203: Colibri Module not found\n");
+			fprintf(stdout, "  204: File not found\n");
+			fprintf(stdout, "  207: Unexpected number of measurements.\n");
 	}
 	else
 	{
@@ -112,10 +129,9 @@ void help(int argcCmd, char **argvCmd)
 			}
 			else if(strcmp(argvCmd[1], "save") == 0)
 			{
-				fprintf(stdout, "Usage: colibri save [FILE]\n");
-				fprintf(stdout, "  Saves the levelling data and the last measurements in the given file FILE as a csv file.\n");
-				fprintf(stdout, "  If FILE is -, the data is printed to stdout.\n");
-				fprintf(stdout, "  If FILE is omitted, an automatic file name is choosen: SN-YEAR-MONTH-DAY_HOUR_MIN_SEC.csv where SN is the serial number of the current colibri module.\n");
+				fprintf(stdout, "Usage: colibri save [FILE] [COMMENT]\n");
+				fprintf(stdout, "  Saves the levelling data and the last measurements in the given file FILE as a JSON file. If the file already exists, the data are appended.\n");
+				fprintf(stdout, "  The optional string COMMENT is added as a comment to the measurement in the JSON file.\n");
 			}
 			else if(strcmp(argvCmd[1], "data") == 0)
 			{
