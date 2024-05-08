@@ -1,5 +1,7 @@
 # Command line tool for Colibri Module
 
+For more informations about the Colibri Module see [here](https://blog.hseag.com/de-de/oem-komponente-misst-proben-qualitaett).
+
 # Usage
 ```
 Usage: colibri [OPTIONS] COMMAND [ARGUMENTS]\
@@ -41,6 +43,23 @@ The commandline tool returns the following exit codes:
   207: Unexpected number of measurements.
   
 ```
+# Typical Sequence
+1.	Aspirate the sample, a minimal volume of 11.5 µl is needed.
+2.	Pickup a cuvette from the Colibri Module.
+3.	Move the tip with the empty cuvette over the cuvette holder.
+4.	Start the command [baseline](README.md#command-baseline).
+5.	Move the tip with the empty cuvette into the cuvette holder.
+6.	Start the command [measure](README.md#command-measure).
+7.	Dispense 11.5 µl sample into the cuvette. A good speed is about 5 µl/s.
+8.	Start the command [measure](README.md#command-measure).
+9.	Aspirate the sample back from the cuvette into the tip.
+10.	Move the cuvette out of the cuvette holder.
+11.	If needed, eject the cuvette, and process the sample further.
+12.	Save the data with command [save](README.md#command-save).
+
+Calculated the values with command [data](README.md#command-data).
+
+# Command Details
 ## Command baseline
 ```
 Usage: colibri baseline
@@ -67,7 +86,7 @@ Usage: data calculate [OPTIONS] FILE
 Options:
   --blanks      : number of blanks from the begining. Default is 1
   --pathLength  : path length in [mm]. Default is 1.0
-  --a260unit    : for dsDNA use 50, for ssDNS use 33 and for ssRNA use 40. Default is 50.\n
+  --a260unit    : for dsDNA use 50, for ssDNA use 33 and for ssRNA use 40. Default is 50.\n
 ```
 ## Command fwupdate
 ```
@@ -125,8 +144,9 @@ Output: all units in [uV]
 ```
 ## Command save
 ```
-Usage: colibri save [FILE]
-  Saves the levelling data and the last measurements in the given file FILE as a JSON file. If the files already exists, the data are appended.
+Usage: colibri save [FILE] [COMMENT]
+  Saves the levelling data and the last measurements in the given file FILE as a JSON file. If the file already exists, the data are appended.
+  The optional string COMMENT is added as a comment to the measurement in the JSON file.
 ```
 ## Command selftest
 ```
